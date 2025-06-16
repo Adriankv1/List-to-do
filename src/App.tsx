@@ -2,19 +2,41 @@ import { useState, useEffect } from 'react'
 import type { List } from './types'
 import { ListManager } from './components/ListManager'
 import { ListDisplay } from './components/ListDisplay'
+import { AuthForm } from './components/AuthForm'
 import { supabase } from './lib/supabase'
 
 function App() {
   const [lists, setLists] = useState<List[]>([])
+  const [user, setUser] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchLists()
+    // Check for existing session on mount
+    const session = supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user ?? null)
+      setLoading(false)
+    })
+    // Listen for auth changes
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+    return () => {
+      listener.subscription.unsubscribe()
+    }
   }, [])
 
+  useEffect(() => {
+    if (user) fetchLists()
+    else setLists([])
+    // eslint-disable-next-line
+  }, [user])
+
   const fetchLists = async () => {
+    if (!user) return
     const { data, error } = await supabase
       .from('lists')
       .select('*')
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -41,6 +63,29 @@ function App() {
     setLists(lists.filter((l) => l.id !== listId))
   }
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    setUser(null)
+  }
+
+  if (loading) return <div>Loading...</div>
+
+  if (!user) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        backgroundColor: '#f5f5f5',
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        paddingTop: 0,
+      }}>
+        <AuthForm onAuth={setUser} />
+      </div>
+    )
+  }
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -60,9 +105,12 @@ function App() {
         background: 'transparent',
         marginTop: 0,
       }}>
-        <h1 style={{ marginBottom: '20px', textAlign: 'center', fontSize: '2.5rem', fontWeight: 700 }}>My Lists</h1>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <h1 style={{ marginBottom: 0, textAlign: 'center', fontSize: '2.5rem', fontWeight: 700 }}>My Lists</h1>
+          <button onClick={handleLogout} style={{ background: '#f44336', color: '#fff', marginLeft: 16 }}>Logout</button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <ListManager onListCreated={handleListCreated} />
+          <ListManager onListCreated={handleListCreated} userId={user.id} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {lists.map((list) => (
               <div key={list.id}>

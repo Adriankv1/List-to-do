@@ -4,9 +4,10 @@ import { supabase } from '../lib/supabase';
 
 interface ListManagerProps {
   onListCreated: (list: List) => void;
+  userId: string;
 }
 
-export const ListManager = ({ onListCreated }: ListManagerProps) => {
+export const ListManager = ({ onListCreated, userId }: ListManagerProps) => {
   const [name, setName] = useState('');
   const [type, setType] = useState<'shopping' | 'workout' | 'custom'>('custom');
 
@@ -20,6 +21,7 @@ export const ListManager = ({ onListCreated }: ListManagerProps) => {
           {
             name,
             type,
+            user_id: userId,
           },
         ])
         .select()
