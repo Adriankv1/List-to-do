@@ -4,6 +4,7 @@ import { ListManager } from './components/ListManager'
 import { ListDisplay } from './components/ListDisplay'
 import { AuthForm } from './components/AuthForm'
 import { supabase } from './lib/supabase'
+import { Button } from '@/components/ui/button'
 
 function App() {
   const [lists, setLists] = useState<List[]>([])
@@ -105,13 +106,13 @@ function App() {
         background: 'transparent',
         marginTop: 0,
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
           <h1 style={{ marginBottom: 0, textAlign: 'center', fontSize: '2.5rem', fontWeight: 700 }}>My Lists</h1>
-          <button onClick={handleLogout} style={{ background: '#f44336', color: '#fff', marginLeft: 16 }}>Logout</button>
+          <Button onClick={handleLogout} variant="destructive" className="ml-4 bg-red-600 hover:bg-red-700 text-white">Logout</Button>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
           <ListManager onListCreated={handleListCreated} userId={user.id} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
             {lists.map((list) => (
               <div key={list.id}>
                 <ListDisplay list={list} onUpdate={fetchLists} onDelete={handleDeleteList} />

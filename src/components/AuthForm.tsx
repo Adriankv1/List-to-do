@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface AuthFormProps {
   onAuth: (user: any) => void;
@@ -36,33 +39,39 @@ export const AuthForm = ({ onAuth }: AuthFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 350, margin: '0 auto', padding: 24, background: 'white', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <h2 style={{ textAlign: 'center', marginBottom: 8 }}>{isLogin ? 'Login' : 'Sign Up'}</h2>
-      <input
-        type="email"
-        placeholder="Email (username)"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        required
-        style={{ padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        required
-        style={{ padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
-      />
-      {error && <div style={{ color: 'red', textAlign: 'center' }}>{error}</div>}
-      <button type="submit" disabled={loading} style={{ marginTop: 8 }}>
+    <form onSubmit={handleSubmit} className="max-w-[350px] mx-auto p-6 bg-white rounded-lg shadow flex flex-col gap-4">
+      <h2 className="text-center mb-2 text-xl font-semibold">{isLogin ? 'Login' : 'Sign Up'}</h2>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="email">Email (username)</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="Email (username)"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+        />
+      </div>
+      {error && <div className="text-red-600 text-center">{error}</div>}
+      <Button type="submit" disabled={loading} className="mt-2 w-full">
         {loading ? (isLogin ? 'Logging in...' : 'Signing up...') : (isLogin ? 'Login' : 'Sign Up')}
-      </button>
-      <div style={{ textAlign: 'center', marginTop: 8 }}>
+      </Button>
+      <div className="text-center mt-2">
         {isLogin ? (
-          <span>Don't have an account? <button type="button" style={{ color: '#007bff', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }} onClick={() => setIsLogin(false)}>Sign Up</button></span>
+          <span>Don't have an account? <button type="button" className="text-blue-600 underline" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }} onClick={() => setIsLogin(false)}>Sign Up</button></span>
         ) : (
-          <span>Already have an account? <button type="button" style={{ color: '#007bff', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }} onClick={() => setIsLogin(true)}>Login</button></span>
+          <span>Already have an account? <button type="button" className="text-blue-600 underline" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }} onClick={() => setIsLogin(true)}>Login</button></span>
         )}
       </div>
     </form>

@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import type { List } from '../types';
 import { supabase } from '../lib/supabase';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface ListManagerProps {
   onListCreated: (list: List) => void;
@@ -39,40 +42,35 @@ export const ListManager = ({ onListCreated, userId }: ListManagerProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ padding: '20px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div>
-          <label htmlFor="name" style={{ display: 'block', marginBottom: '5px' }}>List Name</label>
-          <input
-            id="name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter list name"
-            required
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="type" style={{ display: 'block', marginBottom: '5px' }}>List Type</label>
-          <select
-            id="type"
-            value={type}
-            onChange={(e) => setType(e.target.value as any)}
-            required
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-          >
-            <option value="shopping">Shopping List</option>
-            <option value="workout">Workout List</option>
-            <option value="custom">Custom List</option>
-          </select>
-        </div>
-
-        <button type="submit" style={{ padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-          Create List
-        </button>
+    <form onSubmit={handleSubmit} className="p-5 bg-white rounded-lg shadow flex flex-col gap-5">
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="name">List Name</Label>
+        <Input
+          id="name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter list name"
+          required
+        />
       </div>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="type">List Type</Label>
+        <select
+          id="type"
+          value={type}
+          onChange={(e) => setType(e.target.value as any)}
+          required
+          className="w-full p-2 rounded border border-gray-300"
+        >
+          <option value="shopping">Shopping List</option>
+          <option value="workout">Workout List</option>
+          <option value="custom">Custom List</option>
+        </select>
+      </div>
+      <Button type="submit" className="w-full">
+        Create List
+      </Button>
     </form>
   );
 }; 

@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { List, ListItem } from '../types';
 import { supabase } from '../lib/supabase';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
 
 interface ListDisplayProps {
   list: List;
@@ -91,50 +94,48 @@ export const ListDisplay = ({ list, onUpdate, onDelete }: ListDisplayProps) => {
   };
 
   return (
-    <div style={{ padding: '20px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{list.name}</h2>
-          <span style={{ padding: '5px 10px', backgroundColor: list.type === 'shopping' ? '#4caf50' : list.type === 'workout' ? '#2196f3' : '#9e9e9e', color: 'white', borderRadius: '4px' }}>
-            {list.type}
-          </span>
+    <Card className="p-6 rounded-xl shadow flex flex-col gap-6">
+      <div className="flex flex-col gap-6">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-xl font-bold">{list.name}</h2>
+          <span className={`px-3 py-1 rounded text-white ${list.type === 'shopping' ? 'bg-green-600' : list.type === 'workout' ? 'bg-blue-600' : 'bg-gray-500'}`}>{list.type}</span>
         </div>
-        <button onClick={handleDeleteList} style={{ alignSelf: 'flex-end', padding: '6px 14px', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+        <Button onClick={handleDeleteList} variant="destructive" className="self-end mb-2 bg-red-600 hover:bg-red-700 text-white">
           Delete List
-        </button>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <input
+        </Button>
+        <div className="flex gap-2 mb-4">
+          <Input
             type="text"
             value={newItem}
             onChange={(e) => setNewItem(e.target.value)}
             placeholder="Add new item..."
             onKeyPress={(e) => e.key === 'Enter' && handleAddItem()}
-            style={{ flex: 1, padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+            className="flex-1"
           />
-          <button onClick={handleAddItem} style={{ padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+          <Button type="button" onClick={handleAddItem} className="ml-2">
             Add
-          </button>
+          </Button>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div className="flex flex-col gap-3">
           {items.map((item) => (
-            <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div key={item.id} className="flex justify-between items-center py-1">
+              <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={item.completed}
                   onChange={() => handleToggleItem(item)}
                 />
-                <span style={{ textDecoration: item.completed ? 'line-through' : 'none', color: item.completed ? '#9e9e9e' : 'inherit' }}>
+                <span className={item.completed ? 'line-through text-gray-400' : ''}>
                   {item.content}
                 </span>
               </label>
-              <button onClick={() => handleDeleteItem(item.id)} style={{ padding: '5px 10px', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+              <Button type="button" variant="destructive" size="sm" onClick={() => handleDeleteItem(item.id)} className="ml-2 bg-red-600 hover:bg-red-700 text-white">
                 Delete
-              </button>
+              </Button>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </Card>
   );
 }; 
