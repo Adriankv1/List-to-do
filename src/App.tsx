@@ -12,7 +12,7 @@ function App() {
 
   useEffect(() => {
     // Check for existing session on mount
-    const session = supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(({ data }) => {
       setUser(data.session?.user ?? null)
       setLoading(false)
     })
